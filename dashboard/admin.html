@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f1f3f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #panel {
+      display: none;
+    }
+
+    .log {
+      padding: 5px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .ok { color: green; }
+    .fail { color: red; }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <h2>Admin Login</h2>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="msg" style="color:red;"></p>
+  </div>
+
+  <!-- PANEL -->
+  <div id="panel">
+    <h2>Admin Panel</h2>
+
+    <h3>Saved Pattern</h3>
+    <pre id="pattern"></pre>
+
+    <h3>Login Logs</h3>
+    <div id="logs"></div>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+<script>
+
+// 🔑 login credentials
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "1234";
+
+function login() {
+  let u = document.getElementById("user").value;
+  let p = document.getElementById("pass").value;
+
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("panel").style.display = "block";
+    loadData();
+  } else {
+    document.getElementById("msg").innerText = "Wrong username or password";
+  }
+}
+
+function logout() {
+  document.getElementById("panel").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
+}
+
+function loadData() {
+  let pattern = JSON.parse(localStorage.getItem("userPattern"));
+  let logs = JSON.parse(localStorage.getItem("loginLogs")) || [];
+
+  // show pattern
+  if (pattern && pattern.length > 0) {
+    document.getElementById("pattern").innerText =
+      pattern.map(v => v.toFixed(1)).join(", ");
+  } else {
+    document.getElementById("pattern").innerText = "No data yet";
+  }
+
+  // show logs
+  let div = document.getElementById("logs");
+  div.innerHTML = "";
+
+  if (logs.length === 0) {
+    div.innerText = "No logs yet";
+    return;
+  }
+
+  logs.forEach((log, i) => {
+    div.innerHTML += `
+      <div class="log ${log.result === 'Accepted' ? 'ok' : 'fail'}">
+        ${i+1}. ${log.avg} ms → ${log.result}
+      </div>
+    `;
+  });
+}
+
+</script>
+
+</body>
+</html>
