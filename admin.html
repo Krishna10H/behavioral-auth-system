@@ -1,0 +1,21 @@
+<html>
+<body>
+
+<h2>Admin Panel</h2>
+
+<h3>Saved Pattern:</h3>
+<p id="pattern"></p>
+
+<h3>Login Results:</h3>
+<p id="logs"></p>
+
+<script>
+let pattern = localStorage.getItem("userPattern");
+document.getElementById("pattern").innerText = pattern;
+
+let logs = localStorage.getItem("loginLogs");
+document.getElementById("logs").innerText = logs;
+</script>
+
+</body>
+</html>
